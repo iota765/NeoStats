@@ -1,41 +1,75 @@
-# NeoStats
+🚀 NeoStats
 
-An **adaptive RAG chatbot ** built with Streamlit, LangGraph, FAISS, and Tavily.
+NeoStats is an Adaptive Retrieval-Augmented Generation (RAG) chatbot built using Streamlit, LangGraph, FAISS, and Tavily.
 
-This project supports:
-- local document question answering with retrieval-augmented generation
-- live web search fallback when document or model context is insufficient
-- concise and detailed response modes
-- terminal-first debugging with step-by-step pipeline prints
+It intelligently decides when to retrieve documents, search the web, or answer directly using the LLM, enabling reliable responses while reducing hallucinations.
 
-## Architecture
+✨ Features
 
-The chatbot uses an adaptive routing flow instead of a single fixed pipeline.
+📄 Document Q&A with uploaded PDF and TXT files
 
-1. The graph first decides whether retrieval is needed.
-2. If retrieval is needed, it searches uploaded documents.
-3. Retrieved chunks are filtered for relevance.
-4. If relevant context is found, the answer is generated only from that context.
-5. If context is not sufficient, the system rewrites the query and performs one web search attempt.
-6. If web results still do not provide proper context, the chatbot stops and returns an abstaining answer instead of guessing.
+🔍 Adaptive retrieval routing based on query intent
+
+🌐 Web search fallback when document context is insufficient
+
+🧠 Relevance filtering for retrieved document chunks
+
+⚡ Multi-LLM support: Groq, OpenAI, Gemini
+
+🧪 Terminal-first debugging with detailed pipeline logs
+
+🛑 Hallucination control via abstaining responses
+
+🧠 Architecture
+
+NeoStats uses an adaptive routing workflow instead of a fixed RAG pipeline.
 
 ## Graph View
-
 ![RAG Graph](./NeoStats%20AI%20Engineer%20Use%20Case/AI_UseCase/rag_graph.png)
 
-## Tech Stack
+Pipeline Flow
 
-- Streamlit for the user interface
-- LangGraph for workflow orchestration
-- LangChain for prompts, document processing, and tool integration
-- FAISS for vector search
-- HuggingFace sentence-transformer embeddings
-- Groq / OpenAI / Gemini model support
-- Tavily for live web search
+The graph decides whether retrieval is needed.
 
-## Project Structure
+If required, it searches uploaded documents.
 
-```text
+Retrieved chunks are graded for relevance.
+
+If relevant context exists → generate answer using context.
+
+If context is insufficient → rewrite query and perform web search.
+
+If web results still lack context → return an abstaining response instead of guessing.
+
+User Question
+      │
+      ▼
+   Router
+      │
+ ┌────┴─────┐
+ ▼          ▼
+Direct LLM  Retrieval
+             │
+             ▼
+       Relevance Filter
+             │
+             ▼
+      Answer Generation
+             │
+             ▼
+       Web Search Fallback
+📊 Graph View
+
+🛠 Tech Stack
+Component	Technology
+UI	Streamlit
+Workflow	LangGraph
+LLM Integration	LangChain
+Vector Search	FAISS
+Embeddings	HuggingFace Sentence Transformers
+Web Search	Tavily
+LLM Providers	Groq, OpenAI, Gemini
+📂 Project Structure
 NeoStats AI Engineer Use Case/
 └── AI_UseCase/
     ├── app.py
@@ -48,96 +82,129 @@ NeoStats AI Engineer Use Case/
     ├── utils/
     ├── vectorstore/
     └── workflow/
-```
+⚙️ Key Modules
 
-## Key Modules
+app.py
+Streamlit entry point and UI logic.
 
-- `app.py`: Streamlit entrypoint and UI flow
-- `workflow/graph_builder.py`: LangGraph workflow definition
-- `models/llm.py`: model loading for Groq, OpenAI, and Gemini
-- `models/embeddings.py`: embedding model configuration
-- `utils/rag_helpers.py`: uploaded document processing and retriever creation
-- `utils/web_helpers.py`: graph invocation helper
-- `nodes/`: retrieval, relevance checking, generation, and web fallback nodes
-- `routes/route.py`: graph routing logic
+workflow/graph_builder.py
+Defines the LangGraph workflow pipeline.
 
-## Pipeline Behavior
+models/llm.py
+Loads supported LLM providers.
 
-### Document Flow
+models/embeddings.py
+Embedding model configuration.
 
-- User uploads `pdf` or `txt` files
-- Documents are loaded and split into chunks
-- Chunks are embedded and stored in a FAISS vector index
-- The retriever uses MMR-based search to improve chunk diversity
+utils/rag_helpers.py
+Handles document processing and retriever creation.
 
-### Answer Flow
+utils/web_helpers.py
+Utility for invoking web search.
 
-- If the model can answer directly, it uses general knowledge
-- If it cannot answer confidently, it routes to retrieval or web search
-- If relevant context is missing, it returns:
+nodes/
+Core pipeline nodes including:
 
-```text
+retrieval
+
+relevance grading
+
+generation
+
+web search fallback
+
+routes/route.py
+Handles adaptive routing decisions.
+
+📄 Pipeline Behavior
+Document Processing
+
+User uploads PDF or TXT files
+
+Documents are loaded and split into chunks
+
+Chunks are embedded and stored in FAISS
+
+Retriever uses MMR search for diverse context
+
+Answer Generation
+
+If the model can answer directly → use LLM knowledge
+
+Otherwise → retrieve relevant document chunks
+
+If context is still insufficient → perform web search
+
+If no reliable context is found → return:
+
 I don't know based on the available information.
-```
 
-This is intentional to reduce hallucinations.
+This prevents hallucinated responses.
 
-## Setup
+⚡ Setup
 
 Install dependencies:
 
-```bash
 pip install -r "NeoStats AI Engineer Use Case/AI_UseCase/requirements.txt"
-```
+🔑 Environment Variables
 
-Set environment variables in:
+Create a .env file in:
 
-```text
-NeoStats AI Engineer Use Case/AI_UseCase/.env
-```
+NeoStats AI Engineer Use Case/AI_UseCase/
 
-Example keys used by the project:
+Example keys:
 
-- `GROQ_API_KEY`
-- `TAVILY_API_KEY`
-- `OPENAI_API_KEY` (optional)
-- `GOOGLE_API_KEY` or `GEMINI_API_KEY` (optional)
+GROQ_API_KEY=
+TAVILY_API_KEY=
+OPENAI_API_KEY=optional
+GEMINI_API_KEY=optional
+▶️ Run the App
 
-## Run the App
+Navigate to the application folder:
 
-From the project app folder:
-
-```bash
 cd "NeoStats AI Engineer Use Case/AI_UseCase"
-python -m streamlit run app.py
-```
 
-## Debugging
+Run the Streamlit app:
 
-The app is designed to print pipeline steps directly in the terminal, including:
+streamlit run app.py
+🧪 Debugging
 
-- LLM loading
-- retrieval decisions
-- chunk retrieval
-- relevance filtering
-- query rewriting
-- web search attempts
-- final answer generation
+The system prints pipeline steps directly in the terminal, including:
 
-This makes it easier to debug routing and hallucination issues while testing.
+LLM loading
 
-## Example Use Case
+retrieval decisions
 
-This chatbot can be used as a document-aware assistant for:
+document chunk retrieval
 
-- company research
-- financial or business Q&A
-- policy and report lookup
-- study material Q&A
-- knowledge-base style internal assistants
+relevance filtering
 
-## Notes
+query rewriting
 
-- Uploaded local documents are preferred when they provide valid context.
-- Web search is used as a fallback, not the first source.
-- The system is intentionally conservative and avoids answering when context is weak.
+web search attempts
+
+answer generation
+
+This helps debug routing and hallucination behavior.
+
+🎯 Example Use Cases
+
+NeoStats can act as a document-aware assistant for:
+
+company research
+
+financial report analysis
+
+policy and documentation lookup
+
+study material Q&A
+
+internal knowledge-base assistants
+
+🛡 Notes
+
+Local documents are prioritized when valid context exists.
+
+Web search is only used as a fallback.
+
+The system intentionally avoids answering when context is weak to reduce hallucinations.
