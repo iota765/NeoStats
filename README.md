@@ -21,7 +21,7 @@ The chatbot uses an adaptive routing flow instead of a single fixed pipeline.
 
 ## Graph View
 
-![RAG Graph](./NeoStats%20AI%20Engineer%20Use%20Case/AI_UseCase/rag_graph.png)
+![RAG Graph](./rag_graph.png)
 
 ## Tech Stack
 
@@ -36,18 +36,20 @@ The chatbot uses an adaptive routing flow instead of a single fixed pipeline.
 ## Project Structure
 
 ```text
-NeoStats AI Engineer Use Case/
-└── AI_UseCase/
-    ├── app.py
-    ├── config/
-    ├── ingestion/
-    ├── models/
-    ├── nodes/
-    ├── prompts/
-    ├── routes/
-    ├── utils/
-    ├── vectorstore/
-    └── workflow/
+project/
+├── config/
+├── models/
+├── utils/
+├── ingestion/
+├── nodes/
+├── prompts/
+├── routes/
+├── vectorstore/
+├── workflow/
+├── app.py
+├── main.py
+├── requirements.txt
+└── rag_graph.png
 ```
 
 ## Key Modules
@@ -87,13 +89,13 @@ This is intentional to reduce hallucinations.
 Install dependencies:
 
 ```bash
-pip install -r "NeoStats AI Engineer Use Case/AI_UseCase/requirements.txt"
+pip install -r requirements.txt
 ```
 
 Set environment variables in:
 
 ```text
-NeoStats AI Engineer Use Case/AI_UseCase/.env
+.env
 ```
 
 Example keys used by the project:
@@ -108,7 +110,6 @@ Example keys used by the project:
 From the project app folder:
 
 ```bash
-cd "NeoStats AI Engineer Use Case/AI_UseCase"
 python -m streamlit run app.py
 ```
 
