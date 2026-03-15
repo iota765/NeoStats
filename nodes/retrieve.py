@@ -17,14 +17,17 @@ def retrieve(state: State):
             print("Failed to build retriever.")
             return {"docs": []}
 
-        if hasattr(retriever, "similarity_search"):
-            print("[retrieve] Using similarity_search")
-            docs = retriever.similarity_search(state["question"])
+        if hasattr(retriever, "invoke"):
+            print("[retrieve] Using retriever.invoke")
+            docs = retriever.invoke(state["question"])
         elif hasattr(retriever, "get_relevant_documents"):
             print("[retrieve] Using get_relevant_documents")
             docs = retriever.get_relevant_documents(state["question"])
+        elif hasattr(retriever, "similarity_search"):
+            print("[retrieve] Using similarity_search")
+            docs = retriever.similarity_search(state["question"])
         else:
-            print("Retriever object does not support similarity_search or get_relevant_documents.")
+            print("Retriever object does not support invoke, get_relevant_documents, or similarity_search.")
             return {"docs": []}
 
         print(f"Retrieved {len(docs)} documents.")

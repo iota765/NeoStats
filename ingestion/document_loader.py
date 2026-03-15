@@ -1,9 +1,19 @@
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_core.documents import Document
-from PyPDF2 import PdfReader
+
+try:
+    from pypdf import PdfReader
+except ImportError:
+    try:
+        from PyPDF2 import PdfReader
+    except ImportError:
+        PdfReader = None
 
 
 def _load_pdf_with_pypdf2(file_path):
+    if PdfReader is None:
+        raise ImportError("Neither pypdf nor PyPDF2 is installed for PDF reading.")
+
     print("[document_loader] Falling back to PyPDF2 PDF reader")
     reader = PdfReader(file_path)
     documents = []
