@@ -1,6 +1,6 @@
 # NeoStats
 
-An adaptive RAG chatbot built with Streamlit, LangGraph, FAISS, and Tavily.
+An **adaptive RAG chatbot ** built with Streamlit, LangGraph, FAISS, and Tavily.
 
 This project supports:
 - local document question answering with retrieval-augmented generation
