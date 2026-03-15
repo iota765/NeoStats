@@ -39,6 +39,12 @@ def route_after_relevance(state: State) -> Literal["generate_from_context", "rew
         print("Routing after relevance: using 'generate_from_context' (relevant docs found).")
         return "generate_from_context"
 
+    if state.get("retriever") is not None and len(state.get("docs", []) or []) > 0 and state.get("web_attempts", 0) == 0:
+        print(
+            "Routing after relevance: no docs passed LLM relevance, but local retrieval returned context. Trying local context generation first."
+        )
+        return "generate_from_context"
+
     if state.get("web_attempts", 0) >= 1:
         print(
             "Routing after relevance: stopping with 'I don't know' because web search did not provide proper context."
@@ -52,3 +58,20 @@ def route_after_relevance(state: State) -> Literal["generate_from_context", "rew
     else:
         print("Routing after relevance: using 'rewrite_query' (trying one web search for context).")
     return "rewrite_query"
+
+
+def route_after_context(state: State) -> Literal["end", "rewrite_query"]:
+    answer = (state.get("answer") or "").strip().lower()
+
+    if (
+        ("i don't know" in answer or "i do not know" in answer)
+        and state.get("retriever") is not None
+        and state.get("web_attempts", 0) == 0
+    ):
+        print(
+            "Routing after context generation: local documents were insufficient. Trying web search once."
+        )
+        return "rewrite_query"
+
+    print("Routing after context generation: final answer ready.")
+    return "end"

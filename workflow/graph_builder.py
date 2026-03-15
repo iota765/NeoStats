@@ -7,7 +7,12 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 from nodes.web_query import rewrite_query, web_search_node
 from nodes.direct_generation import generate_direct
 from nodes.relevance import is_relevant
-from routes.route import route_after_decide, route_after_direct, route_after_relevance
+from routes.route import (
+    route_after_context,
+    route_after_decide,
+    route_after_direct,
+    route_after_relevance,
+)
 from nodes.retrieve_decision import decide_retrieval
 from nodes.generate_from_context import generate_from_context
 from nodes.retrieve import retrieve
@@ -56,6 +61,13 @@ g.add_conditional_edges(
 
 g.add_edge("rewrite_query","web_search_node")
 g.add_edge("web_search_node","is_relevant")
-g.add_edge("generate_from_context", END)
+g.add_conditional_edges(
+    "generate_from_context",
+    route_after_context,
+    {
+        "rewrite_query": "rewrite_query",
+        "end": END,
+    },
+)
 
 app = g.compile()

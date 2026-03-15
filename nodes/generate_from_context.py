@@ -8,10 +8,14 @@ llm = load_llm()
 def generate_from_context(state: State):
     try:
         print("[generate_from_context] Starting context-based generation")
-        if "relevant_docs" in state:
+        if state.get("relevant_docs"):
             docs = state.get("relevant_docs") or []
-        else:
+            print("[generate_from_context] Using relevance-filtered documents")
+        elif state.get("retriever") is not None and len(state.get("docs", []) or []) > 0 and state.get("web_attempts", 0) == 0:
             docs = state.get("docs", []) or []
+            print("[generate_from_context] Falling back to locally retrieved documents")
+        else:
+            docs = []
 
         print(f"[generate_from_context] Docs available: {len(docs)}")
 
