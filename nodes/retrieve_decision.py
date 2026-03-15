@@ -3,7 +3,7 @@ import json
 from models.llm import load_llm
 from prompts.decide_retrieval_prompt import decide_retrieval_prompt
 from config.state import State
-from utils.query_analysis import requires_external_lookup
+from utils.query_analysis import is_smalltalk, requires_external_lookup
 
 llm = load_llm()
 
@@ -12,6 +12,10 @@ def decide_retrieval(state: State):
     try:
         print("[decide_retrieval] Starting retrieval decision")
         print(f"[decide_retrieval] Question: {state['question']}")
+        if is_smalltalk(state["question"]):
+            print("[decide_retrieval] Small-talk question detected. Skipping retrieval.")
+            return {"need_retrieval": False}
+
         heuristic_lookup = requires_external_lookup(state["question"])
         print(f"[decide_retrieval] heuristic_requires_lookup={heuristic_lookup}")
 

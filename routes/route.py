@@ -1,6 +1,6 @@
 from typing import Literal
 from config.state import State
-from utils.query_analysis import requires_external_lookup
+from utils.query_analysis import is_smalltalk, requires_external_lookup
 
 
 def route_after_decide(state: State) -> Literal["retrieve", "generate_direct"]:
@@ -17,6 +17,10 @@ def route_after_decide(state: State) -> Literal["retrieve", "generate_direct"]:
 def route_after_direct(state: State) -> Literal["end", "rewrite_query"]:
     answer = (state.get("answer") or "").strip().lower()
     question = state.get("question", "")
+
+    if is_smalltalk(question):
+        print("Routing after direct generation: small-talk response accepted without web search.")
+        return "end"
 
     if requires_external_lookup(question):
         print("Routing after direct generation: factual/entity question should be verified. Trying web search.")

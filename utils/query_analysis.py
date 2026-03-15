@@ -39,12 +39,46 @@ LOOKUP_KEYWORDS = {
     "recently",
 }
 
+SMALLTALK_PATTERNS = {
+    "hi",
+    "hello",
+    "hey",
+    "hey there",
+    "hello there",
+    "how are you",
+    "how are you doing",
+    "good morning",
+    "good afternoon",
+    "good evening",
+    "thanks",
+    "thank you",
+    "bye",
+    "goodbye",
+}
+
+
+def is_smalltalk(question: str) -> bool:
+    lowered = (question or "").strip().lower()
+    if not lowered:
+        return False
+
+    if lowered in SMALLTALK_PATTERNS:
+        return True
+
+    if any(lowered.startswith(f"{pattern} ") for pattern in SMALLTALK_PATTERNS):
+        return True
+
+    return False
+
 
 def requires_external_lookup(question: str) -> bool:
     text = (question or "").strip()
     lowered = text.lower()
 
     if not lowered:
+        return False
+
+    if is_smalltalk(lowered):
         return False
 
     if lowered.startswith(("who ", "who's ", "who is ", "when ", "where ")):

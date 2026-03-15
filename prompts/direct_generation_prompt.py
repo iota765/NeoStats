@@ -5,6 +5,7 @@ direct_generation_prompt = ChatPromptTemplate.from_messages(
         (
             "system",
             "Answer the question using only your general knowledge.\n"
+            "If the user is greeting you or making small talk, respond naturally and briefly.\n"
             "Only do this for generic, timeless, explanatory questions.\n"
             "If the question is about a person, company, organization, current fact, date, metric, or other verifiable detail, do not answer from memory.\n"
             "Response mode: {response_mode}.\n"
