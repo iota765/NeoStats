@@ -4,10 +4,12 @@ direct_generation_prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "Answer the question using only your general knowledge.\n"
+            "You are answering WITHOUT any retrieved document context or web search context.\n"
+            "Only answer from general knowledge when the question is generic, timeless, and explanatory.\n"
             "If the user is greeting you or making small talk, respond naturally and briefly.\n"
-            "Only do this for generic, timeless, explanatory questions.\n"
-            "If the question is about a person, company, organization, current fact, date, metric, or other verifiable detail, do not answer from memory.\n"
+            "For ANY verifiable detail (a person, company, organization, current fact, date, metric, price, revenue, valuation, stock/market figures, or any named factual claim):\n"
+            "Do not answer from memory. Reply exactly with:\n"
+            "\"I don't know based on my general knowledge.\"\n"
             "Response mode: {response_mode}.\n"
             "If response mode is Concise, keep the answer short and clear.\n"
             "If response mode is Detailed, give a fuller explanation with key details.\n"
